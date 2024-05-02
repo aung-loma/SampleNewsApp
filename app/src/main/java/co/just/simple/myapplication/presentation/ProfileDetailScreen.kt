@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
@@ -60,11 +61,14 @@ import co.just.simple.myapplication.ui.theme.IconResource
 import kotlinx.coroutines.launch
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProfileDetailScreen (
     navHostController: NavHostController
 ) {
-    var textValue by remember { mutableStateOf(TextFieldValue()) }
+    val pagerState = rememberPagerState(pageCount = {ProfileTabItems.entries.size})
+    val selectedIndex = remember{ derivedStateOf { pagerState.currentPage }}
+    val scope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -76,120 +80,156 @@ fun ProfileDetailScreen (
 
             }
         )
-        Column (
+        LazyColumn (
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.verticalScroll(rememberScrollState())
         ) {
-            ConstraintLayout (modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, top = 16.dp)) {
-                val (profile,name,joinDate,followStatus) = createRefs()
-                val horizontalGuideline = createGuidelineFromTop(0.5f)
-                Image(
-                    painter = painterResource(id = IconResource.Account),
-                    contentDescription = "Account", modifier = Modifier
-                        .constrainAs(profile) {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start)
-                        }
-                        .size(56.dp)
-                        .clip(CircleShape))
+            item {
+                ConstraintLayout (modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp, top = 16.dp)) {
+                    val (profile,name,joinDate,followStatus) = createRefs()
+                    Image(
+                        painter = painterResource(id = IconResource.Account),
+                        contentDescription = "Account", modifier = Modifier
+                            .constrainAs(profile) {
+                                top.linkTo(parent.top)
+                                start.linkTo(parent.start)
+                            }
+                            .size(56.dp)
+                            .clip(CircleShape))
 
-                Column (
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier.constrainAs(name) {
+                    Column (
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier.constrainAs(name) {
+                            top.linkTo(profile.top)
+                            bottom.linkTo(profile.bottom)
+                            start.linkTo(profile.end, margin = 4.dp)
+                            end.linkTo(followStatus.start)
+                            height = Dimension.fillToConstraints
+                            width = Dimension.fillToConstraints
+                        }
+                    ) {
+                        Text(text = "Aung Bo Phyoe", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(bottom = 4.dp))
+                        Text(text = "Joined July 2023", style = MaterialTheme.typography.labelSmall)
+                    }
+
+                    Row (modifier = Modifier.constrainAs(followStatus){
                         top.linkTo(profile.top)
                         bottom.linkTo(profile.bottom)
-                        start.linkTo(profile.end, margin = 4.dp)
-                        end.linkTo(followStatus.start)
+                        end.linkTo(parent.end)
                         height = Dimension.fillToConstraints
-                        width = Dimension.fillToConstraints
+                    }, verticalAlignment = Alignment.CenterVertically) {
+                        Column (
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Text(text = "Followers", style = MaterialTheme.typography.titleSmall, modifier = Modifier.padding(bottom = 4.dp))
+                            Text(text = "1000", style = MaterialTheme.typography.titleSmall)
+                        }
+                        Spacer(modifier = Modifier.width(24.dp))
+                        Column (
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Text(text = "Following", style = MaterialTheme.typography.titleSmall, modifier = Modifier.padding(bottom = 4.dp))
+                            Text(text = "20", style = MaterialTheme.typography.titleSmall)
+                        }
                     }
-                ) {
-                    Text(text = "Aung Bo Phyoe", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(bottom = 4.dp))
-                    Text(text = "Joined July 2023", style = MaterialTheme.typography.labelSmall)
+
+                }
+                Text(text = stringResource(id = R.string.long_text), style = MaterialTheme.typography.bodyMedium , modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp))
+
+                ConstraintLayout (modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)) {
+                    val (followBtn,actionStatus) = createRefs()
+                    FillButton (
+                        name = "Follow",
+                        onClick = {
+                            /**/
+                        },
+                        modifier = Modifier
+                            .constrainAs(followBtn) {
+                                start.linkTo(parent.start)
+                                top.linkTo(parent.top)
+                            }
+                            .border(
+                                width = 1.dp,
+                                color = Color.Black,
+                                shape = RoundedCornerShape(4.dp)
+                            )
+                            .width(120.dp)
+                            .height(28.dp)
+                    )
+
+                    Row(modifier = Modifier.constrainAs(actionStatus){
+                        end.linkTo(parent.end)
+                        top.linkTo(followBtn.top)
+                        bottom.linkTo(followBtn.bottom)
+                        height = Dimension.fillToConstraints
+                    }, horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                        Image(painter = painterResource(id = IconResource.Heart), contentDescription = "Like", modifier = Modifier
+                            .size(24.dp)
+                            .padding(end = 4.dp))
+                        Text(text = "100", style = MaterialTheme.typography.titleSmall, textAlign = TextAlign.Center)
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Image(painter = painterResource(id = IconResource.Comment), contentDescription = "Comment", modifier = Modifier
+                            .size(24.dp)
+                            .padding(end = 4.dp))
+                        Text(text = "40", style = MaterialTheme.typography.titleSmall, textAlign = TextAlign.Center)
+                    }
                 }
 
-                Row (modifier = Modifier.constrainAs(followStatus){
-                    top.linkTo(profile.top)
-                    bottom.linkTo(profile.bottom)
-                    end.linkTo(parent.end)
-                    height = Dimension.fillToConstraints
-                }, verticalAlignment = Alignment.CenterVertically) {
-                    Column (
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(text = "Followers", style = MaterialTheme.typography.titleSmall, modifier = Modifier.padding(bottom = 4.dp))
-                        Text(text = "1000", style = MaterialTheme.typography.titleSmall)
-                    }
-                    Spacer(modifier = Modifier.width(24.dp))
-                    Column (
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(text = "Following", style = MaterialTheme.typography.titleSmall, modifier = Modifier.padding(bottom = 4.dp))
-                        Text(text = "20", style = MaterialTheme.typography.titleSmall)
-                    }
-                }
-
-            }
-            Text(text = stringResource(id = R.string.long_text), style = MaterialTheme.typography.bodyMedium , modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp))
-
-            ConstraintLayout (modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)) {
-                val (followBtn,actionStatus) = createRefs()
                 FillButton (
-                    name = "Follow",
+                    name = "Become a Publisher",
                     onClick = {
                         /**/
                     },
                     modifier = Modifier
-                        .constrainAs(followBtn) {
-                            start.linkTo(parent.start)
-                            top.linkTo(parent.top)
-                        }
-                        .border(
-                            width = 1.dp,
-                            color = Color.Black,
-                            shape = RoundedCornerShape(4.dp)
-                        )
-                        .width(120.dp)
-                        .height(28.dp)
+                        .fillMaxWidth()
+                        .height(42.dp)
+                        .padding(horizontal = 16.dp)
                 )
-
-                Row(modifier = Modifier.constrainAs(actionStatus){
-                    end.linkTo(parent.end)
-                    top.linkTo(followBtn.top)
-                    bottom.linkTo(followBtn.bottom)
-                    height = Dimension.fillToConstraints
-                }, horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-                    Image(painter = painterResource(id = IconResource.Heart), contentDescription = "Like", modifier = Modifier
-                        .size(24.dp)
-                        .padding(end = 4.dp))
-                    Text(text = "100", style = MaterialTheme.typography.titleSmall, textAlign = TextAlign.Center)
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Image(painter = painterResource(id = IconResource.Comment), contentDescription = "Comment", modifier = Modifier
-                        .size(24.dp)
-                        .padding(end = 4.dp))
-                    Text(text = "40", style = MaterialTheme.typography.titleSmall, textAlign = TextAlign.Center)
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+            stickyHeader {
+                Box (modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()) {
+                    TabRow(modifier = Modifier.fillMaxWidth(),
+                        selectedTabIndex = selectedIndex.value,
+                        divider = {}) {
+                        ProfileTabItems.entries.forEachIndexed { index, tab ->
+                            ProfileCustomTabs(
+                                selected = index == selectedIndex.value,
+                                text = tab.title,
+                                count = tab.count,
+                                onClick =  {
+                                    scope.launch {
+                                        pagerState.animateScrollToPage(tab.ordinal)
+                                    }
+                                }
+                            )
+                        }
+                    }
                 }
             }
+            item {
+                HorizontalPager(
+                    state = pagerState
+                ) {pageIndex ->
+                    when (pageIndex) {
+                        ProfileTabItems.PUBLISHED.ordinal -> PostList()
 
-            FillButton (
-                name = "Become a Publisher",
-                onClick = {
-                    /**/
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(42.dp)
-                    .padding(horizontal = 16.dp)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            ProfileTabs()
-            Spacer(modifier = Modifier.height(24.dp))
+                        ProfileTabItems.PENDING.ordinal ->  EmptyScreen()
+
+                        ProfileTabItems.DECLINED.ordinal ->  PostList()
+
+                        ProfileTabItems.DRAFT.ordinal ->  EmptyScreen()
+                    }
+                }
+                Spacer(modifier = Modifier.height(24.dp))
+            }
         }
     }
 }
@@ -289,10 +329,9 @@ fun ProfileCustomTabs(
     ) {
         Text(
             text = text,
-            style = MaterialTheme.typography.bodySmall.copy(
+            style = MaterialTheme.typography.titleSmall.copy(
                 color = if (selected) MaterialTheme.colorScheme.primary else Color.Gray,
                 lineHeight = 14.sp,
-                fontSize = 12.sp,
                 textAlign = TextAlign.Center
             ),
         )
