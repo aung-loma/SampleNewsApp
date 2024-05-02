@@ -70,7 +70,7 @@ fun ToolBarWithTitleAndBack(
                     },contentAlignment = Alignment.Center
             ) {
                 Image(
-                    painter = painterResource(id = IconResource.Calendar), // Use the appropriate icon resource for edit
+                    painter = painterResource(id = IconResource.Edit), // Use the appropriate icon resource for edit
                     contentDescription = "Edit",
                     modifier = Modifier.padding(10.dp)
                 )
@@ -78,11 +78,11 @@ fun ToolBarWithTitleAndBack(
         }
         Box(modifier = Modifier
             .fillMaxWidth()
-            .height(1.dp)
+            .height(2.dp)
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        MaterialTheme.colorScheme.surfaceTint.copy(alpha = 0.1f),
+                        MaterialTheme.colorScheme.surfaceTint.copy(alpha = 0.2f),
                         Color.Transparent,
                     )
                 )

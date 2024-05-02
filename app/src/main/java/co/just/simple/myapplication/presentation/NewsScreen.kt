@@ -2,6 +2,7 @@ package co.just.simple.myapplication.presentation
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -46,7 +47,7 @@ fun NewsScreen (
 fun ListItem(value : String,  onSwipeLeft: () -> Unit = {}) {
     SwipeCard(
         onSwipeRight = {
-            onSwipeLeft()
+            /*onSwipeLeft()*/
         }
     ) {
         ConstraintLayout (modifier = Modifier.fillMaxSize()) {
@@ -73,7 +74,9 @@ fun ListItem(value : String,  onSwipeLeft: () -> Unit = {}) {
             Icon(painter = painterResource(id = R.drawable.ic_launcher_foreground), contentDescription = null, modifier = Modifier.height(56.dp).width(24.dp).constrainAs(bookmark){
                 top.linkTo(image.top, margin = 14.dp)
                 end.linkTo(image.end, margin = 14.dp)
-            }.background(color = Color.Gray))
+            }.background(color = Color.Gray).clickable {
+                onSwipeLeft()
+            })
         }
     }
 }

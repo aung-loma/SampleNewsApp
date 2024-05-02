@@ -11,4 +11,5 @@ object IconResource {
     val My_Media = R.drawable.ic_my_media
     val Calendar = R.drawable.ic_calender
     val Account = R.drawable.ic_account
+    val Edit = R.drawable.ic_edit
 }
