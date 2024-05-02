@@ -149,11 +149,6 @@ fun ProfileDetailScreen (
                                 start.linkTo(parent.start)
                                 top.linkTo(parent.top)
                             }
-                            .border(
-                                width = if(buttonState.value) 0.dp else 1.dp,
-                                color = if(buttonState.value) MaterialTheme.colorScheme.inversePrimary else Color.Black,
-                                shape = RoundedCornerShape(4.dp)
-                            )
                             .background(
                                 color = if(buttonState.value) MaterialTheme.colorScheme.inversePrimary else MaterialTheme.colorScheme.primary,
                                 shape = RoundedCornerShape(4.dp)
