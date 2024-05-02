@@ -43,11 +43,7 @@ fun SwipeCard(
                         dismiss = true
                         onSwipeLeft.invoke()
                     }
-
-                    offset < -swipeThreshold -> {
-                        dismiss = true
-                        onSwipeRight.invoke()
-                    }
+                    else -> { offset = 0f}
                 }
                 if (change.positionChange() != Offset.Zero) change.consume()
             }
@@ -59,3 +55,12 @@ fun SwipeCard(
         content()
     }
 }
+
+
+
+/*
+*
+*  offset < -swipeThreshold -> {
+                        dismiss = true
+                        onSwipeRight.invoke()
+                    }*/
