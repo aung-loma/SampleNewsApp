@@ -1,9 +1,12 @@
 package co.just.simple.myapplication.model
 
-sealed class Screen(val route: String) {
-
-    object NewsScreen : Screen("news")
-
-    object DetailsScreen : Screen("news_details")
-
+enum class Screen {
+    NEWS,
+    PROFILE_DETAIL,
+    EDIT_PUBLISHER,
+}
+sealed class NavigationItem(val route: String) {
+    object News : NavigationItem(Screen.NEWS.name)
+    object ProfileDetail : NavigationItem(Screen.PROFILE_DETAIL.name)
+    object EditPublisher : NavigationItem(Screen.EDIT_PUBLISHER.name)
 }

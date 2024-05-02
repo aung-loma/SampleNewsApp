@@ -1,4 +1,4 @@
-package presentation
+package co.just.simple.myapplication.presentation
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
@@ -8,14 +8,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,10 +27,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavHostController
 import co.just.simple.myapplication.R
 import co.just.simple.myapplication.components.button.FillButton
@@ -42,7 +38,7 @@ import co.just.simple.myapplication.ui.theme.IconResource
 
 
 @Composable
-fun DetailsScreen (
+fun ProfileDetailScreen (
     navHostController: NavHostController
 ) {
     var showContent by remember { mutableStateOf(false) }
@@ -59,9 +55,9 @@ fun DetailsScreen (
         )
         Column (
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 12.dp)
+            modifier = Modifier.padding(top = 12.dp)
         ) {
-            ConstraintLayout (modifier = Modifier.fillMaxWidth()) {
+            ConstraintLayout (modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp)) {
                 val (profile,name,joinDate,followStatus) = createRefs()
                 val horizontalGuideline = createGuidelineFromTop(0.5f)
                 Image(
@@ -90,36 +86,25 @@ fun DetailsScreen (
                     top.linkTo(profile.top)
                     bottom.linkTo(profile.bottom)
                     end.linkTo(parent.end)
-                }) {
+                }, verticalAlignment = Alignment.Top) {
                     Column (
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
+                        verticalArrangement = Arrangement.Top
                     ) {
-                        Text(text = "1000", style = MaterialTheme.typography.labelSmall)
-                        Text(text = "Followers", style = MaterialTheme.typography.labelMedium)
+                        Text(text = "Followers", style = MaterialTheme.typography.labelLarge)
+                        Text(text = "1000", style = MaterialTheme.typography.titleSmall)
                     }
                     Spacer(modifier = Modifier.width(24.dp))
                     Column (
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
+                        verticalArrangement = Arrangement.Top
                     ) {
-                        Text(text = "20", style = MaterialTheme.typography.labelSmall)
-                        Text(text = "Following", style = MaterialTheme.typography.labelMedium)
+                        Text(text = "Following", style = MaterialTheme.typography.labelLarge)
+                        Text(text = "20", style = MaterialTheme.typography.titleSmall)
                     }
                 }
 
             }
-            SimpleOutlinedTextFieldSample(
-                value = textValue,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(32.dp)
-                    .padding(16.dp),
-                hint = "Name",
-                onValueChanged = {
-                    textValue = it
-                }
-            )
             FillButton (
                 name = "Become a Publisher",
                 onClick = {
@@ -127,20 +112,6 @@ fun DetailsScreen (
                 },
                 modifier = Modifier.fillMaxWidth()
             )
-            Button(onClick = {
-                navHostController.popBackStack()
-            }) {
-                Text("Back")
-            }
-            Button(onClick = { showContent = !showContent }) {
-                Text("Click me!")
-            }
-            AnimatedVisibility(showContent) {
-                Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Image(painterResource(R.drawable.ic_launcher_foreground), null)
-                    Text("Compose: hello")
-                }
-            }
         }
     }
 }
